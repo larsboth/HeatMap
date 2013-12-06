@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using HeatMap.Datentypen;
+using CommandLine;
+using CommandLine.Text;
 
 namespace HeatMap
 {
@@ -15,22 +17,33 @@ namespace HeatMap
 
         static void Main(string[] args)
         {
-            coordinateFactory = new CoordinateFactory( -1 );
-
-            HeatMap.Datentypen.HeatMap hm = new HeatMap.Datentypen.HeatMap();
-
-            int routeIdx = 0;
-
-            foreach (string gpxFile in Directory.EnumerateFiles("C:\\Users\\Both\\Privat\\HeatMap\\Input", "*.gpx"))
+            var options = new Options();
+            CommandLine.Parser parser = new CommandLine.Parser();
+            if (parser.ParseArguments(args, options))
             {
-                var route = ReadGPX(gpxFile, routeIdx);
-                hm.AddRoute(route);
+                // consume Options type properties
+                    //Console.WriteLine(options.InputDir);
 
-                routeIdx++;
+                coordinateFactory = new CoordinateFactory( -1 );
+
+                HeatMap.Datentypen.HeatMap hm = new HeatMap.Datentypen.HeatMap();
+                hm.HeatSteps = options.HeatSteps;
+                hm.StickyDistance = options.Stickyness;
+                hm.SmoothingRatio = options.SmoothingRatio;
+
+                int routeIdx = 0;
+
+                foreach (string gpxFile in Directory.EnumerateFiles(options.InputDir, "*.gpx"))
+                {
+                    var route = ReadGPX(gpxFile, routeIdx);
+                    hm.AddRoute(route);
+
+                    routeIdx++;
+                }
+                hm.CalculateHeat();
+
+                WriteKML(hm, options.OutputFile);
             }
-            hm.CalculateHeat();
-
-            WriteKML( hm );
         }
 
         private static Route ReadGPX(string gpxFile, int routeIdx)
@@ -60,7 +73,7 @@ namespace HeatMap
             return route;
         }
 
-        private static void WriteKML(HeatMap.Datentypen.HeatMap hm)
+        private static void WriteKML(HeatMap.Datentypen.HeatMap hm, string toFile)
         {
             XDocument doc =
               new XDocument(
@@ -185,11 +198,9 @@ namespace HeatMap
             }
 
 
-            doc.Save("C:\\Users\\Both\\Privat\\HeatMap\\t.kml", SaveOptions.None);
+            doc.Save(toFile, SaveOptions.None);
 
         }
-
-
 
         private static string GetHeatString( int heat, HeatMap.Datentypen.HeatMap hm )
         {

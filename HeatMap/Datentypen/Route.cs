@@ -11,10 +11,12 @@ namespace HeatMap.Datentypen
         private List<Leg> legs = new List<Leg>();
         private int routeIdx;
 
+        public static int SmoothingRatio { get; set; }
 
         public Route(int routeIdx)
         {
-         this.RouteIdx = routeIdx;   
+         this.RouteIdx = routeIdx;
+         SmoothingRatio = 150;
         }
 
         public List<Leg> Legs
@@ -37,7 +39,6 @@ namespace HeatMap.Datentypen
         {
             coordinates.Add(c);
 
-            // Direkt wegsmoothbar?
             if (coordinates.Count > 2)
             {
                 Coordinate lineStart = coordinates[coordinates.Count - 3];  //x1
@@ -49,14 +50,23 @@ namespace HeatMap.Datentypen
                 double valueB = (point.Longitude - lineStart.Longitude) / (lineEnd.Longitude - lineStart.Longitude);
 
                 if (
-                        Math.Abs(valueA - valueB) < 0.000000000000005 && //0.000000000005 &&
-                        point.IsInRectangle( lineEnd, lineStart )
+                        DistanceFromPointToLine(point, lineStart, lineEnd) < lineStart.CalculateDistance(lineEnd) / SmoothingRatio
                     )
                 {
                     coordinates.Remove(point);
                 }
             }
 
+        }
+
+        public static double DistanceFromPointToLine(Coordinate point, Coordinate l1, Coordinate l2)
+        {
+            // given a line based on two points, and a point away from the line,
+            // find the perpendicular distance from the point to the line.
+            // see http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
+            // for explanation and defination.
+            return Math.Abs((l2.Latitude - l1.Latitude) * (l1.Longitude - point.Longitude) - (l1.Latitude - point.Latitude) * (l2.Longitude - l1.Longitude)) /
+                    Math.Sqrt(Math.Pow(l2.Latitude - l1.Latitude, 2) + Math.Pow(l2.Longitude - l1.Longitude, 2));
         }
 
         public void CreateLegs()
@@ -80,14 +90,7 @@ namespace HeatMap.Datentypen
 
                     start = end;
                 } 
-                else
-                {
-                    
-                }
-                
             }
-
         }
-
     }
 }

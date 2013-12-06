@@ -82,7 +82,7 @@ namespace HeatMap.Datentypen
             //    );
         }
 
-        public string ToString()
+        public override string ToString()
         {
             return Longitude.ToString(CultureInfo.GetCultureInfo("en-GB")) + "," + latitude.ToString(CultureInfo.GetCultureInfo("en-GB"));
         }

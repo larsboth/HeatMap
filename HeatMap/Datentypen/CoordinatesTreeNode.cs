@@ -123,9 +123,6 @@ namespace HeatMap.Datentypen
         /// einen neuen Oberknoten zu erstellen.</returns>
         public CoordinatesTreeNode FindNode( Coordinate coordinate )
         {
-
-            //Console.WriteLine( "{0}, {1}", ThisNodeWidth(), segmentWidth );
-
             // Schon der richtige Knoten? Ist der Fall, wenn die minimale Kantenbreite unterschritten wird.
             // Sollte die Koordinate nicht innerhalb des Quadrats des aktuellen Knotens liegen, wird null
             // zurückgegeben werden.
