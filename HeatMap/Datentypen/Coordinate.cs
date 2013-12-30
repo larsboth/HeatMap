@@ -6,7 +6,7 @@ using System.Text;
 
 namespace HeatMap.Datentypen
 {
-    public class Coordinate//: Tuple<double, double>
+    public class Coordinate
     {
         private double longitude;
         private double latitude;
@@ -24,7 +24,6 @@ namespace HeatMap.Datentypen
         }
 
         public Coordinate( double lon, double lat )
-            //:base(lon, lat)
         {
             Longitude = lon;
             latitude = lat;
@@ -37,14 +36,9 @@ namespace HeatMap.Datentypen
             return this.Longitude == comparee.Longitude && this.latitude == comparee.latitude;
         }
 
-
-
         public override int GetHashCode()
         {
-            //return longitude.GetHashCode() + latitude.GetHashCode();
-            //return base.GetHashCode();
             return latitude.GetHashCode() ^ Longitude.GetHashCode();
-
         }
 
         public double CalculateDistance( Coordinate comparee )
@@ -56,7 +50,6 @@ namespace HeatMap.Datentypen
                 );
         }
 
-
         public bool IsInRectangle( Coordinate a, Coordinate b )
         {
             Coordinate upper = a.Longitude <= b.Longitude ? a : b;
@@ -64,22 +57,11 @@ namespace HeatMap.Datentypen
             Coordinate lower = a.Longitude >= b.Longitude ? a : b;
             Coordinate right = a.Latitude >= b.Latitude ? a : b;
 
-
             return
                 upper.Longitude <= Longitude &&
                 Longitude <= lower.Longitude &&
                 left.Latitude <= Latitude &&
                 Latitude <= right.Latitude;
-
-            //return
-            //    (
-            //        (a.Longitude < Longitude && b.Longitude >= Longitude) ||
-            //        (a.Longitude > Longitude && b.Longitude <= Longitude)
-            //    ) &&
-            //    (
-            //        (a.Latitude < Latitude && b.Latitude >= Latitude) ||
-            //        (a.Latitude > Latitude && b.Latitude <= Latitude)
-            //    );
         }
 
         public override string ToString()

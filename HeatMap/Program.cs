@@ -27,9 +27,8 @@ namespace HeatMap
                 coordinateFactory = new CoordinateFactory( -1 );
 
                 HeatMap.Datentypen.HeatMap hm = new HeatMap.Datentypen.HeatMap();
-                hm.HeatSteps = options.HeatSteps;
                 hm.StickyDistance = options.Stickyness;
-                hm.SmoothingRatio = options.SmoothingRatio;
+                Route.Stickyness = options.Stickyness;
 
                 int routeIdx = 0;
 
@@ -39,6 +38,10 @@ namespace HeatMap
                     hm.AddRoute(route);
 
                     routeIdx++;
+
+                //    hm.CalculateHeat();
+
+                //    WriteKML(hm, options.OutputFile + string.Format(".{0}.kml", routeIdx) );
                 }
                 hm.CalculateHeat();
 

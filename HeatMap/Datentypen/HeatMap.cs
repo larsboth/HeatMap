@@ -12,9 +12,7 @@ namespace HeatMap.Datentypen
         private Dictionary<int, int> heatMapping = new Dictionary<int, int>();
 
         private CoordinatesTreeNode coordinatesTreeRoot = null;
-        private int smoothingRatio;
 
-        //private double StickyDistance = 0.0004; //0.0004;
         private int minHeat;
         private int maxHeat;
 
@@ -22,21 +20,10 @@ namespace HeatMap.Datentypen
         private List<HeatRange> selectedRanges;
 
         public double StickyDistance { get; set; }
-        public int HeatSteps { get; set; }
-        public int SmoothingRatio
-        {
-            set
-            {
-                smoothingRatio = value;
-                Route.SmoothingRatio = smoothingRatio;
-            }
-        }
-
 
         public HeatMap()
         {
             StickyDistance = 0.0004;
-            HeatSteps = 3;
         }
 
         public Dictionary<Leg, int> Heat
@@ -132,44 +119,31 @@ namespace HeatMap.Datentypen
             if (selectedRanges != null)
                 return selectedRanges;
 
+            string opaqueness = "64";
+
             ranges = new List<HeatRange>();
 
-            ranges.Add(new HeatRange() { RangeName = "arctic", Color = "50780014" });
-            ranges.Add(new HeatRange() { RangeName = "freezing", Color = "50F00A14" });
-            ranges.Add(new HeatRange() { RangeName = "cold", Color = "50F03C14" });
-            ranges.Add(new HeatRange() { RangeName = "cooler", Color = "5078A03C" });
-            ranges.Add(new HeatRange() { RangeName = "cool 5", Color = "50147814" });
-            ranges.Add(new HeatRange() { RangeName = "cool 4", Color = "5014B400" });
-            ranges.Add(new HeatRange() { RangeName = "cool 3", Color = "5014F000" });
-            ranges.Add(new HeatRange() { RangeName = "cool 2", Color = "5014F0A0" });
-            ranges.Add(new HeatRange() { RangeName = "cool 1", Color = "5014E7FF" });
-            ranges.Add(new HeatRange() { RangeName = "medium", Color = "5014BAFF" });
-            ranges.Add(new HeatRange() { RangeName = "warm 1", Color = "50147CFF" });
-            ranges.Add(new HeatRange() { RangeName = "warm 2", Color = "50146AFF" });
-            ranges.Add(new HeatRange() { RangeName = "warm 3", Color = "50143EFF" });
-            ranges.Add(new HeatRange() { RangeName = "warmer", Color = "50141AFF" });
-            ranges.Add(new HeatRange() { RangeName = "hot", Color = "501400E6" });
+            ranges.Add(new HeatRange() { RangeName = "hot1", Color = opaqueness + "14F014" });
+            ranges.Add(new HeatRange() { RangeName = "hot2", Color = opaqueness + "14F03C" });
+            ranges.Add(new HeatRange() { RangeName = "hot3", Color = opaqueness + "14F0A0" });
+            ranges.Add(new HeatRange() { RangeName = "hot4", Color = opaqueness + "14F0DC" });
+            ranges.Add(new HeatRange() { RangeName = "hot5", Color = opaqueness + "14F0FF" });
+            ranges.Add(new HeatRange() { RangeName = "hot6", Color = opaqueness + "14E7FF" });
+            ranges.Add(new HeatRange() { RangeName = "hot7", Color = opaqueness + "14D5FF" });
+            ranges.Add(new HeatRange() { RangeName = "hot8", Color = opaqueness + "14C3FF" });
+            ranges.Add(new HeatRange() { RangeName = "hot9", Color = opaqueness + "14A8FF" });
+            ranges.Add(new HeatRange() { RangeName = "hot10", Color = opaqueness + "1485FF" });
+            ranges.Add(new HeatRange() { RangeName = "hot11", Color = opaqueness + "1461FF" });
+            ranges.Add(new HeatRange() { RangeName = "hot12", Color = opaqueness + "143EFF" });
+            ranges.Add(new HeatRange() { RangeName = "hot13", Color = opaqueness + "1400FF" });
 
-            // Depending on number of choosen Heat steps, remove a few.
-            selectedRanges = new List<HeatRange>();
-            selectedRanges.Add(ranges.First());
-            selectedRanges.Add(ranges.Last());
-
-            float step = (ranges.Count()) / ((float)HeatSteps - 2);
-
-            for (float stepLoop = 1; stepLoop < ranges.Count(); stepLoop += step)
-            {
-                if (!selectedRanges.Contains(ranges[(int)stepLoop])) {
-                    selectedRanges.Add(ranges[(int)stepLoop]);
-                }
-            }
+            selectedRanges = ranges; 
 
 
             for (int idx = 0; idx < selectedRanges.Count; idx++)
             {
                 selectedRanges[idx].MinHeat = this.MinHeat + (int)Math.Floor((this.MaxHeat - this.MinHeat) / (double)selectedRanges.Count * (double)idx);
                 selectedRanges[idx].MaxHeat = this.MinHeat + (int)Math.Floor((this.MaxHeat - this.MinHeat) / (double)selectedRanges.Count * ((double)idx + 1));
-
             }
 
             int rangeID = 0;
@@ -192,13 +166,12 @@ namespace HeatMap.Datentypen
         public void CalculateHeat()
         {
             Heat = new Dictionary<Leg, int>();
+            selectedRanges = null;
 
             foreach (Leg leg in allLegs)
             {
                 List<Leg> legClusterStart = coordinatesTreeRoot.GetLegs( leg.Start );
                 List<Leg> legClusterEnd = coordinatesTreeRoot.GetLegs(leg.End);
-
-                //Heat[leg] = legClusterStart.Select(l => l.RouteIdx).Distinct().Count();
                 Heat[leg] = legClusterStart.Count() + legClusterEnd.Count();
             }
 

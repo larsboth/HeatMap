@@ -11,19 +11,17 @@ namespace HeatMap.Datentypen
         private List<Leg> legs = new List<Leg>();
         private int routeIdx;
 
-        public static int SmoothingRatio { get; set; }
+        public static double Stickyness { get; set; }
 
         public Route(int routeIdx)
         {
-         this.RouteIdx = routeIdx;
-         SmoothingRatio = 150;
+            this.RouteIdx = routeIdx;
         }
 
         public List<Leg> Legs
         {
             get
             {
-                //CreateLegs();
                 return legs;
             }
             set { legs = value; }
@@ -49,8 +47,8 @@ namespace HeatMap.Datentypen
                 double valueA = (point.Latitude - lineStart.Latitude) / (lineEnd.Latitude - lineStart.Latitude);
                 double valueB = (point.Longitude - lineStart.Longitude) / (lineEnd.Longitude - lineStart.Longitude);
 
-                if (
-                        DistanceFromPointToLine(point, lineStart, lineEnd) < lineStart.CalculateDistance(lineEnd) / SmoothingRatio
+                 if (
+                        DistanceFromPointToLine(point, lineStart, lineEnd) == 0
                     )
                 {
                     coordinates.Remove(point);
@@ -85,9 +83,7 @@ namespace HeatMap.Datentypen
                 if (start.CalculateDistance(current) != 0)
                 {
                     end = current;
-
                     legs.Add( new Leg(start, end, routeIdx) );
-
                     start = end;
                 } 
             }
