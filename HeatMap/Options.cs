@@ -18,6 +18,9 @@ namespace HeatMap
         [Option('t', "stickyness", Required = false, HelpText = "Max distance for two points to be treated as equal.")]
         public float Stickyness { get; set; }
 
+        [Option('l', "loose", Required = false, HelpText = "Determines if tracks are modified to represent mapped points.")]
+        public Boolean Loose { get; set; }
+
     }
     
 }

@@ -119,7 +119,7 @@ namespace HeatMap.Datentypen
             if (selectedRanges != null)
                 return selectedRanges;
 
-            string opaqueness = "64";
+            string opaqueness = "FF";
 
             ranges = new List<HeatRange>();
 

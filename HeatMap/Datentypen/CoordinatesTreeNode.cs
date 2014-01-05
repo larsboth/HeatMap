@@ -12,6 +12,8 @@ namespace HeatMap.Datentypen
     /// </summary>
     class CoordinatesTreeNode
     {
+        public static bool RelocateCoordinates { get; set; }
+
         private List<Leg> legs = new List<Leg>();
         private CoordinatesTreeNode[,] children = new CoordinatesTreeNode[3,3];
         private CoordinatesTreeNode parent = null;
@@ -217,8 +219,11 @@ namespace HeatMap.Datentypen
                     );
             }
 
-            coordinate.Longitude = snapToCoordinate.Longitude;
-            coordinate.Latitude = snapToCoordinate.Latitude;
+            if (RelocateCoordinates)
+            {
+                coordinate.Longitude = snapToCoordinate.Longitude;
+                coordinate.Latitude = snapToCoordinate.Latitude;
+            }
 
             // Legs ohne Länge werden nicht zugefügt.
             if (!leg.End.Equals(leg.Start))

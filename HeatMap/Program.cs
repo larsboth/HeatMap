@@ -18,7 +18,9 @@ namespace HeatMap
         static void Main(string[] args)
         {
             var options = new Options();
+
             CommandLine.Parser parser = new CommandLine.Parser();
+
             if (parser.ParseArguments(args, options))
             {
                 // consume Options type properties
@@ -29,6 +31,7 @@ namespace HeatMap
                 HeatMap.Datentypen.HeatMap hm = new HeatMap.Datentypen.HeatMap();
                 hm.StickyDistance = options.Stickyness;
                 Route.Stickyness = options.Stickyness;
+                CoordinatesTreeNode.RelocateCoordinates = !options.Loose;
 
                 int routeIdx = 0;
 
